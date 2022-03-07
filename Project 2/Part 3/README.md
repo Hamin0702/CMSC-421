@@ -25,17 +25,10 @@ This part of the project include the following c files that corresponds to each 
 * schedule_priority_rr.c
 <br />
 
-Before running the algorithm, there is a brief explanation of the algorithm and how it works.
-<br />
-It will then display the tasks that is being run in the format [Task] [Priority] [CPU burst] and how many time units it spent for running that task.
-<br />
-There will also be an explanation for every step as it is taking place.
-<br /><br />
-
-
-#### **We are supposed to print "informative statements that briefly explain each step of the algoith as it is taking place"
-#### **My step-by-step explanations are specifcially made for the schedule.txt that was given (the one with 8 tasks)
-<br /> 
+The c files add the tasks from a given schedule to a linked list and run the tasks in a way specific to its algorithm. <br />
+As the algorithm adds tasks to the linked list, there will be a step-by-step explanation that describes what is going on. <br />
+Before running the algorithm, there is a brief explanation of the algorithm and how it works. <br />
+It will then display the tasks that is being run in the format [Task] [Priority] [CPU burst] and how many time units it spent for running that task (*There may be also be step-by-step explanations for running the tasks depending on the algorithm). <br /><br />
 
 ### The code solution was inspired from a user named BY98 on Github
 #### Github Link: https://github.com/BY98/Scheduling-Algorithms

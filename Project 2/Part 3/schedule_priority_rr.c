@@ -6,15 +6,17 @@
 #include "schedulers.h"
 #include "cpu.h"
 
-void explainStep(int number);
-
 struct node *head = NULL;
 struct node *last = NULL;
 struct node *new = NULL;
 struct node * current = NULL;
 
 void add(char *name, int priority, int burst) {
+
+	printf("** Calling add function for [%s] [%d] [%d] \n", name, priority, burst);
+
 	if (head == NULL) {
+		printf("  >> Adding the first task to the head node \n\n");
     	head = malloc(sizeof(struct node));
 
     	// set the name of the task 
@@ -37,19 +39,22 @@ void add(char *name, int priority, int burst) {
 		// if current->next is NULL
 		if (!(current -> next)) {
 			if (((new -> task -> priority) < (current -> task -> priority)) || ((new -> task -> priority) ==(current -> task -> priority))) {
+				printf("  ** Head Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+				printf("  >> If there's only the head node, and the new task has equal or smaller priority value than the head, it's added to the end of the linked list \n\n");
 				current -> next = new; // head points to second node 
 				new -> next = NULL;
 			
 			// if the second node burst is smaller than the current burst  
 			} else {
-			
-			// set new to point to head which is in the second position
-			new->next = current; 	
-			// head now holds the address of new which is in the first position
-			head = new;
-			// reset current to new
-			current = new;	  
-			// we still have the second node connected to null  
+				printf("  ** Head Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+				printf("  >> If there's only the head node, and the new task has a greater priority value than the head, it's added to the linked list as the new head \n\n");
+				// set new to point to head which is in the second position
+				new->next = current; 	
+				// head now holds the address of new which is in the first position
+				head = new;
+				// reset current to new
+				current = new;	  
+				// we still have the second node connected to null  
 			}	   
 		
 		// T3 and on execute from here I think 
@@ -59,12 +64,17 @@ void add(char *name, int priority, int burst) {
     			
 				if ((new -> task -> priority > current -> next -> task -> priority) ) {
 	  				if (new->task->priority < current->task->priority) {
+						printf("  ** \"Current Node\": [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  ** Task after \"Current Node\": [%s] [%d] [%d] \n", current -> next -> task -> name, current -> next -> task -> priority, current -> next -> task -> burst);
+						printf("  >> If the new task has a priority value less than the \"current node\" but greater than the task after, the new task is added to the linked list after the \"current node\" \n\n");
 						new->next = current->next;
 						current->next = new ;
 						current = head; 
 						break;
 					
 					} else if (new->task->priority > current->task->priority) {
+						printf("  ** Head Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  >> If the new task has a priority value greater than the head node, the new task is added to the linked list as the new head \n\n");
 						head = new;
 						new->next = current;
 						current = head;
@@ -72,6 +82,9 @@ void add(char *name, int priority, int burst) {
 					
 					// if the new priority == the current priority
 					} else if(new->task->priority == current->task->priority) {
+						printf("  ** \"Current Node\": [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  ** Task after \"Current Node\": [%s] [%d] [%d] \n", current -> next -> task -> name, current -> next -> task -> priority, current -> next -> task -> burst);
+						printf("  >> If the new task has a priority value equal to the \"current node\" but greater than the task after, the new task is added to the linked list after the \"current node\" \n\n");
 						new->next = current->next;
 						current->next = new;	
 						break;		
@@ -81,13 +94,19 @@ void add(char *name, int priority, int burst) {
 	   				current = current -> next ;
 	   
 	  	 			if (current->next == NULL) {
+						printf("  ** Last task: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  >> If the new task has a priority value equal to the last task of the linked list, the new task is added to the end of the linked list \n\n");
 						new->next = NULL;
 					
 					} else if (new-> task-> priority == current->next->task->priority) {
+						printf("  ** Second task after \"Current Node\": [%s] [%d] [%d] \n", current -> next -> task -> name, current -> next -> task -> priority, current -> next -> task -> burst);
+						printf("  >> If the new task has a priority value equal to the two tasks after the \"current node\", the new task is added to the linked list after them \n\n");
 						current = current -> next ;   
 						new->next = current->next;   
 		   			
 					} else {
+						printf("  ** Task after \"Current Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  >> If the new task has a priority value equal to the task after the \"current node\", the new task is added to the linked list after it \n\n");
 		   				new->next = current->next;	   
 					}   
 	   
@@ -100,7 +119,8 @@ void add(char *name, int priority, int burst) {
 	  				current = current -> next;
 	  
 	 				if ( current->next == NULL) {
-						//printf("testing"); 
+						printf("  ** Task after \"Current Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  >> If the new task has a priority value less than the task after the \"current node\", the new task is added to the linked list after it \n\n");
 						current->next = new;  
 						new->next = NULL;
 						current = head;
@@ -115,6 +135,8 @@ void add(char *name, int priority, int burst) {
 
 // invoke the scheduler
 void schedule() {
+
+	printf("** Calling schedule function \n\n");
 
 	current = head;
 	struct node * ref = head;	
@@ -134,19 +156,21 @@ void schedule() {
 	
 		// ref->next = 3 (this is the second 3rd) 
 		if (ref->next ==NULL) {
+			printf("  >> If the \"reference node\" is the last task of the list, run the task for the entire burst time \n");
 			run(ref->task, ref->task->burst);
-			explainStep(num);
+			printf("\n");
 			num = num + 1;
 			break;	
 		
 		} else {
 			//	ref->task->priority = first 3
 			// ref->next->task->priority = second 3
-			if ((ref->task->priority != ref->next->task->priority)) {	
+			if ((ref->task->priority != ref->next->task->priority)) {
+				printf("  >> If the \"reference node\" is the only task with its priority value, run the task for the entire burst time \n");
 				run(ref->task,ref->task->burst);
-				explainStep(num);
 				num = num + 1;
 				ref = ref->next; // ref = first 3
+				printf("  >> Move along the linked list after finishing the task \n\n");
 			
 			} else {
 
@@ -156,6 +180,7 @@ void schedule() {
 					if ((ref->task->priority == ref->next->task->priority)) {
 	
 						// set current to point to ref ( location of first 3)	
+						printf("  ** Setting up round robin for tasks with the same priority value \n");
 						current = ref ;  
 
 						// current->next is 3
@@ -180,14 +205,14 @@ void schedule() {
 							if (ref->task->burst >= 10) {
 								newburst = ref->task->burst-10; // set newburst to 0
 								ref->task->burst = 10;
+								printf("  >> If the \"reference node\" has a burst time of 10 or greater, call the run function 10 burst time  \n");
 								run(ref->task,10);	
-								explainStep(num);
 								num = num + 1;
 							
 							} else if (ref-> task-> burst  < 10) {
 								newburst = 0;
+								printf("  >> If the \"reference node\" has a burst time less than 10, call the run function for the remainding burst time \n");
 								run(ref->task,ref->task->burst);	
-								explainStep(num);
 								num = num + 1;
 							}	
  
@@ -196,6 +221,7 @@ void schedule() {
 									current = current->next;	// current points to newT3
 										if (current->next == NULL) { // 
 											if (newburst != 0) {
+												printf("  >> If the \"reference node\" had a burst time greater than 10, update the node in the linked list with the new burst time \n\n");
 												struct node * newnode = malloc(sizeof(struct node));
 												newnode->task = malloc(sizeof(struct task));	
 												newnode->task->name = ref->task->name ;
@@ -208,6 +234,7 @@ void schedule() {
 												break;	
 											
 											} else if (newburst == 0) {
+												printf("  >> If the \"reference node\" had a burst time of 10 or less, the task is removed from the linked list and the list is updated \n\n");
 												ref = ref->next;	 // ref points to new T3
 												current = ref; // current points to new T3 
 												break;
@@ -215,6 +242,7 @@ void schedule() {
 										}
 								
 								} else { // if this is the last element
+									printf("  >> Update the linked list after finishing the round robin \n\n");
 									ref = ref->next; // ref == NULL after this
 									current = beginning;
 									break;	
@@ -230,42 +258,4 @@ void schedule() {
 	} 
 }
 
-void explainStep(int number){
-
-	if(number == 1){
-		printf("  >> The CPU starts with T8 because it has the highest priority of 10 and spends 25 time units to finish the task \n");
-	}else if(number == 2){
-		printf("  >> T4 and T5 has the next highest priority of 5 and the CPU uses round-robin to complete these tasks \n");
-		printf("  >> The CPU works on T4 for 10 time units (Remaining time: 5) \n");
-	}else if(number == 3){
-		printf("  >> Next, the CPU works on T5 for 10 time units (Remaining time: 10) \n");
-	}else if(number == 4){
-		printf("  >> Next, the CPU works on T4 for the remaining 5 time units and finishes it \n");
-	}else if(number == 5){
-		printf("  >> Next, the CPU works on T5 for 10 time units and finishes it \n");
-	}else if(number == 6){
-		printf("  >> T1 has the next highest priority of 4 and the CPU spends 20 time units to finish the task \n");
-	}else if(number == 7){
-		printf("  >> T2, T3, and T7 has the next highest priority of 3 and the CPU uses round-robin to complete these tasks \n");
-		printf("  >> The CPU works on T2 for 10 time units (Remaining time: 15) \n");
-	}else if(number == 8){
-		printf("  >> Next, the CPU works on T3 for 10 time units (Remaining time: 15) \n");
-	}else if(number == 9){
-		printf("  >> Next, the CPU works on T7 for 10 time units (Remaining time: 20) \n");
-	}else if(number == 10){
-		printf("  >> Next, the CPU works on T2 for 10 time units (Remaining time: 5) \n");
-	}else if(number == 11){
-		printf("  >> Next, the CPU works on T3 for 10 time units (Remaining time: 5) \n");
-	}else if(number == 12){
-		printf("  >> Next, the CPU works on T7 for 10 time units (Remaining time: 10) \n");
-	}else if(number == 13){
-		printf("  >> Next, the CPU works on T2 for the remaining 5 time units and finishes it \n");
-	}else if(number == 14){
-		printf("  >> Next, the CPU works on T3 for the remaining 5 time units and finishes it \n");
-	}else if(number == 15){
-		printf("  >> Next, the CPU works on T7 for 10 time units and finishes it \n");
-	}else if(number == 16){
-		printf("  >> Finally, the CPU works on T6 which has the lowest priority and spends 10 time units to finish the task \n");
-	}
-}
 

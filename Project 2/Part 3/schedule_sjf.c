@@ -13,8 +13,11 @@ struct node * final = NULL;
 int num = 0;
 
 void add(char * name, int priority, int burst) {
-	
+
+	printf("** Calling add function for [%s] [%d] [%d] \n", name, priority, burst);
+
 	if (head == NULL) {
+		printf("  >> Adding the first task to the head node \n\n");
     	head = malloc(sizeof(struct node));
 
     	// set the name of the task 
@@ -38,12 +41,17 @@ void add(char * name, int priority, int burst) {
     	
 		// if current->next is NULL
     	if (!(current -> next)) {
+
       		if (((new -> task -> burst) > (current -> task -> burst)) || ((new -> task -> burst) ==(current -> task -> burst))) {
+				printf("  ** Head Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+				printf("  >> If there's only a head node and the new task has greater or equal burst time, add the task as the next node  \n\n");
         		current -> next = new; // head points to second node 
         		new -> next = NULL;
 			
 			// if the second node burst is smaller than the current burst 
 			} else {
+				printf("  ** Head Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+				printf("  >> If there's only a head node and the new task is shorter, the new task becomes the head node \n\n");
 		 		// set new to point to head which is in the second position
 	  			new->next = current; 	
 	  			// head now holds the address of new which is in the first position
@@ -56,33 +64,41 @@ void add(char * name, int priority, int burst) {
     	// T3 and on execute from here I think
 		} else {
     	  
+			//printf("  >> Start of the loop to place the new task in the linked list \n");
 			while(1) {
     		
 				if ((new -> task -> burst < current -> next -> task -> burst) ) {
-	  
+					
 	  				if (new->task->burst > current->task->burst) {
-	  					new->next = current->next;
+						printf("  ** \"Current Node\": [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  ** Task after \"Current Node\": [%s] [%d] [%d] \n", current -> next -> task -> name, current -> next -> task -> priority, current -> next -> task -> burst);
+						printf("  >> If the new task is longer than the \"current node\" and shorter than the task after, place new task after the current node \n\n");
+					  	new->next = current->next;
 	  					current->next = new ;
 	  					current = head; // do  i need this
 	  					break;
-	  			
+
 					} else if (new->task->burst < current->task->burst) {
+						printf("  ** Head Node: [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  >> If the new task is shorter than the head node, the new task is placed as the head node \n\n");
 						head = new;
       					new->next = current;
 	  					current = head;
 	  					break;
 					}	  
-	   
+
       			} else if (new -> task -> burst == current -> next -> task -> burst) {
+					printf("  ** Task after \"Current Node\": [%s] [%d] [%d] \n", current -> next -> task -> name, current -> next -> task -> priority, current -> next -> task -> burst);
+					printf("  >> If the new task has the same burst time as the task after the \"current node\", add the new task after the task with the same burst time \n\n");
 	   				current = current -> next ;
-	   
+
 	   				if (current->next == NULL) {
 	  					new->next = NULL;
-				
+
 					} else if (new-> task-> burst == current->next->task->burst) {
 		   				current = current -> next ;   
 						new->next = current->next;   
-		   		
+
 					} else {
 		   				new->next = current->next;	   
 		   			}   
@@ -94,9 +110,10 @@ void add(char * name, int priority, int burst) {
 					// if the new burst is greater than the current burst 
 				} else if ((new -> task -> burst) > (current -> next -> task -> burst)) {
 	  				current = current -> next;
-	  
+
 	  				if ( current->next == NULL) {
-						//printf("testing"); 
+						printf("  ** \"Current Node\": [%s] [%d] [%d] \n", current -> task -> name, current -> task -> priority, current -> task -> burst);
+						printf("  >> If the new task has a larger burst time than the last task, add to the end of the linked list \n\n"); 
 	  					current->next = new;  
 	  					new->next = NULL;
 	  					current = head;
@@ -112,6 +129,8 @@ void add(char * name, int priority, int burst) {
 // invoke the scheduler
 void schedule() {
 	
+	printf("** Calling schedule function \n");
+
 	float turnaroundtime = 0;
  	float ResponseTime = 0;
 	float WaitTime = 0;
@@ -124,30 +143,13 @@ void schedule() {
     printf("In this case, the CPU will start with the task with the shortest CPU burst and move on to the one with the next shortest CPU burst length\n");
     printf("****************************************************************************** \n\n");
 
+	printf(">> Traverse through the linked list and run the tasks in order\n");
 	while (ref != NULL) {
 		num = num + 1;
     	run(ref -> task, ref -> task -> burst);
    		burst = burst + ref->task->burst;
 		turnaroundtime = turnaroundtime + burst ; //5 (5+10+5)20  50      (5 + 5+10 + 5+10+15)
 		
-		if(num == 1){
-            printf("  >> T6 has the shortest CPU burst time with 10 units so the CPU starts with T6 \n");
-        }else if(num == 2){
-            printf("  >> T4 has the next shortest CPU burst time with 15 units so the CPU works on T4 \n");
-        }else if(num == 3){
-            printf("  >> T1 and T5 has the next shortest CPU burst time with 20 units so the CPU works on T1 \n");
-        }else if(num == 4){
-            printf("  >> and then finishes up with T5 after \n");
-        }else if(num == 5){
-            printf("  >> T2, T3, and T8 has the next shortest CPU burst time with 25 units so the CPU works on T2 \n");
-        }else if(num == 6){
-            printf("  >> and then finishes up with T3 after \n");
-        }else if(num == 7){
-            printf("  >> and then finishes up with T8 \n");
-        }else if(num == 8){
-            printf("  >> Finally, the CPU works on T7, which has the longest CPU burst time \n\n");
-        }
-
 		if (ref->next !=NULL) {
 			ResponseTime = ResponseTime + burst;
 		}
@@ -155,6 +157,7 @@ void schedule() {
 	}
 	WaitTime = turnaroundtime - burst;
 
+	printf("\n");
 	printf("The average turnaround time is : %f time units \n" , (turnaroundtime)/num);    
 	printf("The average ResponseTime is : %f time units \n" , (ResponseTime)/num);
 	printf("The average WaitTime is : %f time units\n " , (WaitTime)/num);
