@@ -22,7 +22,8 @@ void shell_loop(){
     int status;
 
     // Do-While loop to read, parse, and execute the command
-    do{
+    do{   
+        prompt_start:
         printf("> ");
         command = readIn();
         tokens = parse(command);
@@ -31,11 +32,16 @@ void shell_loop(){
         if(strcmp(tokens[0],"exit") == 0){
             int exitCode = shell_exit(tokens);
             
-            // If the exit was valid, free up the pointers and then exit with the proper exit code
-            if(exitCode != -1){
                 free(command);
                 free(tokens);
+
+            // If the exit was valid, free up the pointers and then exit with the proper exit code
+            if(exitCode != -1){
                 exit(exitCode);
+
+            // Else if the exit fails, prompt the user again
+            }else{
+                goto prompt_start;
             }
         }
 
@@ -75,25 +81,6 @@ char* readIn(){
             // Null terminate string and break loop
             buffer[position] = '\0';
             return buffer;
-        
-        // Check if the user input a backslash, add another backslash 
-        }else if(cha == '\\'){
-
-            // Add a total of two backslashes for one backslash
-            buffer[position] = '\\';
-            position++;
-            // If size of string exceeds currently allocated space increase buffer size and reallocate
-            if(position >= bufSize){
-                bufSize += 256;
-                buffer = realloc(buffer, bufSize);
-
-                // Check for allocation error
-                if(!buffer){
-                    fprintf(stderr, "ERROR: Allocation error in read \n");
-                    exit(1);
-                }
-            }
-            buffer[position] = '\\';
 
         // Else add the char to buffer in its proper position
         }else{
@@ -183,7 +170,7 @@ int execute(char** tokens){
     // Child process
     }else if(pid == 0){
         if(execvp(tokens[0],tokens) == -1){
-            //fprintf(stderr, "ERROR: Failed execvp \n");
+            fprintf(stderr, "ERROR: Failed execvp \n");
             exit(1);
         }
         return 1;
@@ -215,8 +202,10 @@ int shell_exit(char **command){
         
         // If strtol failed/argument wasn't a proper number, return -1
         if(*temp != '\0'){
+            fprintf(stderr, "ERROR: Exit code not a number \n");
             return -1;
         }else if(exitStatus < 0 || exitStatus > 255){
+            fprintf(stderr, "ERROR: Invalid exit code \n");
             return -1;
 
         // Else return the exit status number

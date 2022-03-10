@@ -52,7 +52,7 @@ void testUnescape(void){
     printf("Unescaped = %s \n", unescape(line3, stderr));
     printf("Unescaped = %s \n", unescape(line4, stderr));
     
-    /*
+    
     // Check actual inputs from user
     char* input1 = readIn();
     printf("Char* input1 = %s \n", input1);
@@ -60,7 +60,7 @@ void testUnescape(void){
     char* input2 = readIn();
     printf("Char* input2 = %s \n", input2);
     printf("Unescaped = %s \n", unescape(input2, stderr));
-    */
+    
 }
 
 void testExit(void){
@@ -103,25 +103,6 @@ char* readIn(){
             // Null terminate string and break loop
             buffer[position] = '\0';
             return buffer;
-        
-        // Check if the user input a backslash, add another backslash 
-        }else if(cha == '\\'){
-
-            // Add a total of two backslashes for one backslash
-            buffer[position] = '\\';
-            position++;
-            // If size of string exceeds currently allocated space increase buffer size and reallocate
-            if(position >= bufSize){
-                bufSize += 256;
-                buffer = realloc(buffer, bufSize);
-
-                // Check for allocation error
-                if(!buffer){
-                    fprintf(stderr, "ERROR: Allocation error in read \n");
-                    exit(1);
-                }
-            }
-            buffer[position] = '\\';
 
         // Else add the char to buffer in its proper position
         }else{
