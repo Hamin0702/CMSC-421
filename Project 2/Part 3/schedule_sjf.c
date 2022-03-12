@@ -129,7 +129,7 @@ void add(char * name, int priority, int burst) {
 // invoke the scheduler
 void schedule() {
 	
-	printf("** Calling schedule function \n");
+	printf("** Calling schedule function \n\n");
 
 	float turnaroundtime = 0;
  	float ResponseTime = 0;

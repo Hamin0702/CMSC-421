@@ -150,7 +150,7 @@ void schedule() {
 	printf("****************************************************************************** \n");
     printf("Priority scheduling \n");
     printf("This algorithm schedules tasks based on priority \n");
-	printf("The tasks are added to a linked list in order based on priority and the schedule function runs each task in order");
+	printf("The tasks are added to a linked list in order based on priority and the schedule function runs each task in order \n");
     printf("In this case, priorities range from 1 to 10, where a higher numeric value indicates a higher relative priority \n");
     printf("****************************************************************************** \n\n");
 
