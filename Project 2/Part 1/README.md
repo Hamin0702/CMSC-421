@@ -37,3 +37,11 @@ This part of the project was implemented by utilizing the user input and strcat/
 * utils.c (Given)
 * Makefile (Given)
 * simple_shell.c
+
+### *Important Note:
+
+There seems to be a warning from the given utils.c file.
+
+> utils.c: In function ‘unescape’: </br>
+  utils.c:62:31: warning: unused variable ‘i’ [-Wunused-variable] </br>
+   62 |     size_t len = strlen(str), i; </br>
